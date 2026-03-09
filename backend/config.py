@@ -13,14 +13,20 @@ def _sqlite_abs_uri(filename: str) -> str:
     return f"sqlite:///{path}"
 
 class Config:
+    # Debug logs para identificar problema
+    print(f"🔍 CONFIG CLASS - VERCEL: {os.environ.get('VERCEL')}")
+    print(f"🔍 CONFIG CLASS - DATABASE_URL from env: {os.environ.get('DATABASE_URL', 'NOT_SET')[:50]}...")
+    
     # Banco de dados - PostgreSQL em produção, SQLite em desenvolvimento
     database_url = os.environ.get('DATABASE_URL')
     if database_url:
         # Produção: usar PostgreSQL
         SQLALCHEMY_DATABASE_URI = database_url
+        print(f"✅ CONFIG CLASS - Using PostgreSQL: {SQLALCHEMY_DATABASE_URI[:50]}...")
     else:
         # Desenvolvimento: usar SQLite local
         SQLALCHEMY_DATABASE_URI = _sqlite_abs_uri('instaloop.db')
+        print(f"❌ CONFIG CLASS - Using SQLite: {SQLALCHEMY_DATABASE_URI}")
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
