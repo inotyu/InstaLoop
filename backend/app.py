@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from flask import Flask, request, jsonify, g, send_from_directory
 
-from config import config
+from .config import config
 from extensions import db, migrate, jwt, limiter, cors
 from flask_wtf.csrf import CSRFProtect
 csrf = CSRFProtect()
