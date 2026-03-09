@@ -1,0 +1,11 @@
+.sb{height:100%;display:flex;flex-direction:column;padding:18px 12px}
+.sb-top{padding:8px 10px 18px}
+.sb-logo{font-size:22px;font-weight:800;letter-spacing:.2px}
+.sb-nav{display:flex;flex-direction:column;gap:6px;padding:8px 6px}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:14px;color:var(--text)}
+.sb-item:hover{background:rgba(255,255,255,.06)}
+@media (prefers-color-scheme: light){.sb-item:hover{background:rgba(0,0,0,.06)}}
+.sb-itemActive{background:rgba(0,149,246,.14);border:1px solid rgba(0,149,246,.25)}
+.sb-label{font-weight:600}
+.sb-bottom{margin-top:auto;padding:12px 10px;color:var(--muted);font-size:12px}
+.sb-meta{opacity:.9}

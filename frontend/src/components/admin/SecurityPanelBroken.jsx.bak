@@ -1,0 +1,327 @@
+import { useState, useEffect } from 'react'
+import { Shield, AlertTriangle, Activity, Ban, Eye, RefreshCw } from 'lucide-react'
+import Button from '../ui/Button.jsx'
+
+export default function SecurityPanel() {
+  const [securityData, setSecurityData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('24h')
+
+  useEffect(() => {
+    loadSecurityData()
+  }, [timeRange])
+
+  const loadSecurityData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/admin/security?hours=${timeRange === '24h' ? 24 : timeRange === '7d' ? 168 : 720}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      })
+      const data = await response.json()
+      setSecurityData(data)
+    } catch (error) {
+      console.error('Erro ao carregar dados de segurança:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return 'var(--danger)'
+      case 'high': return 'var(--warning)'
+      case 'medium': return 'var(--primary)'
+      case 'low': return 'var(--success)'
+      default: return 'var(--muted)'
+    }
+  }
+
+  const getSeverityBg = (severity) => {
+    switch (severity) {
+      case 'critical': return 'var(--danger-bg)'
+      case 'high': return 'var(--warning-bg)'
+      case 'medium': return 'var(--primary-bg)'
+      case 'low': return 'var(--success-bg)'
+      default: return 'var(--panel-2)'
+    }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+        <div>Carregando dados de segurança...</div>
+      </div>
+    )
+  }
+
+  if (!securityData) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
+        <div>Erro ao carregar dados de segurança</div>
+      </div>
+    )
+  }
+
+  const { summary, recent_events, top_ips, blocked_ips } = securityData
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Header with Time Range */}
+      <div style={{
+        background: 'var(--panel)',
+        border: '1px solid var(--border)',
+        borderRadius: '12px',
+        padding: '20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <div>
+          <h2 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>
+            Painel de Segurança
+          </h2>
+          <p style={{ fontSize: '14px', color: 'var(--muted)' }}>
+            Monitoramento de ameaças e atividades suspeitas
+          </p>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              background: 'var(--bg)',
+              color: 'var(--text)',
+              fontSize: '14px'
+            }}
+          >
+            <option value="24h">Últimas 24h</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="30d">Últimos 30 dias</option>
+          </select>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={loadSecurityData}
+          >
+            <RefreshCw size={16} />
+          </Button>
+        </div>
+      </div>
+
+      {/* Security Overview Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+        gap: '16px' 
+      }}>
+        {summary && Object.entries(summary).map(([key, value]) => (
+          <div
+            key={key}
+            style={{
+              background: 'var(--panel)',
+              border: '1px solid var(--border)',
+              borderRadius: '12px',
+              padding: '20px',
+              textAlign: 'center'
+            }}
+          >
+            <div style={{ 
+              fontSize: '28px', 
+              fontWeight: 900, 
+              color: 'var(--text)',
+              marginBottom: '8px'
+            }}>
+              {value}
+            </div>
+            <div style={{ fontSize: '14px', color: 'var(--muted)' }}>
+              {key.replace('_', ' ').charAt(0).toUpperCase() + key.replace('_', ' ').slice(1)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Recent Security Events */}
+      <div style={{
+        background: 'var(--panel)',
+        border: '1px solid var(--border)',
+        borderRadius: '12px',
+        padding: '24px'
+      }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '20px', color: 'var(--text)' }}>
+          Eventos de Segurança Recentes
+        </h3>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {recent_events?.slice(0, 10).map((event, index) => (
+            <div
+              key={index}
+              style={{
+                padding: '16px',
+                background: 'var(--panel-2)',
+                borderRadius: '8px',
+                border: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px'
+              }}
+            >
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                background: getSeverityBg(event.severity || 'medium'),
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: getSeverityColor(event.severity || 'medium')
+              }}>
+                {event.event_type === 'login_failed' || event.event_type === 'jwt_invalid' ? (
+                  <Ban size={20} />
+                ) : event.event_type === 'suspicious_activity' ? (
+                  <AlertTriangle size={20} />
+                ) : (
+                  <Activity size={20} />
+                )}
+              </div>
+              
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
+                  {event.event_type.replace('_', ' ').charAt(0).toUpperCase() + 
+                   event.event_type.replace('_', ' ').slice(1)}
+                </div>
+                <div style={{ fontSize: '14px', color: 'var(--muted)' }}>
+                  {event.details?.ip || 'IP desconhecido'} • {new Date(event.timestamp).toLocaleString()}
+                </div>
+              </div>
+              
+              <div style={{
+                padding: '4px 8px',
+                borderRadius: '12px',
+                fontSize: '11px',
+                fontWeight: 600',
+                background: getSeverityBg(event.severity || 'medium'),
+                color: getSeverityColor(event.severity || 'medium')
+              }}>
+                {event.severity || 'medium'}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {(!recent_events || recent_events.length === 0) && (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--muted)' }}>
+            Nenhum evento de segurança registrado no período
+          </div>
+        )}
+      </div>
+
+      {/* Top Suspicious IPs */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr 1fr', 
+        gap: '20px' 
+      }}>
+        {/* Top IPs */}
+        <div style={{
+          background: 'var(--panel)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          padding: '24px'
+        }}>
+          <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '20px', color: 'var(--text)' }}>
+            IPs Suspeitos
+          </h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {top_ips?.slice(0, 5).map((ipData, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px',
+                  background: 'var(--panel-2)',
+                  borderRadius: '8px'
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 600, color: 'var(--text)' }}>
+                    {ipData.ip}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    {ipData.events} eventos
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.open(`/admin/logs?ip=${ipData.ip}`, '_blank')}
+                >
+                  <Eye size={16} />
+                </Button>
+              </div>
+            ))}
+          </div>
+          
+          {(!top_ips || top_ips.length === 0) && (
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted)' }}>
+              Nenhum IP suspeito encontrado
+            </div>
+          )}
+        </div>
+
+        {/* Blocked IPs */}
+        <div style={{
+          background: 'var(--panel)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          padding: '24px'
+        }}>
+          <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '20px', color: 'var(--text)' }}>
+            IPs Bloqueados
+          </h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {blocked_ips?.slice(0, 5).map((ipData, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px',
+                  background: 'var(--danger-bg)',
+                  borderRadius: '8px'
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: 600, color: 'var(--danger)' }}>
+                    {ipData.ip}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
+                    Bloqueado há {ipData.blocked_hours}h
+                  </div>
+                </div>
+                <Shield size={16} style={{ color: 'var(--danger)' }} />
+              </div>
+            ))}
+          </div>
+          
+          {(!blocked_ips || blocked_ips.length === 0) && (
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted)' }}>
+              Nenhum IP bloqueado no período
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,112 @@
+import os
+from datetime import timedelta
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+
+
+def _sqlite_abs_uri(filename: str) -> str:
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    path = os.path.join(root, filename)
+    return f"sqlite:///{path}"
+
+class Config:
+    # Banco de dados
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or _sqlite_abs_uri('instaloop.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # JWT
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 900)))  # 15 min
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(seconds=int(os.environ.get('JWT_REFRESH_TOKEN_EXPIRES', 604800)))  # 7 dias
+    JWT_ALGORITHM = 'HS256'  # Fixado para evitar algorithm confusion
+    
+    # Admin
+    ADMIN_ROUTE_SECRET = os.environ.get('ADMIN_ROUTE_SECRET')
+    
+    # Argon2
+    ARGON2_TIME_COST = int(os.environ.get('ARGON2_TIME_COST', 3))
+    ARGON2_MEMORY_COST = int(os.environ.get('ARGON2_MEMORY_COST', 65536))
+    ARGON2_PARALLELISM = int(os.environ.get('ARGON2_PARALLELISM', 2))
+    
+    # Uploads
+    UPLOAD_MAX_SIZE_MB = int(os.environ.get('UPLOAD_MAX_SIZE_MB', 5))
+    _UPLOAD_DIR = os.environ.get('UPLOAD_DIR') or 'static/uploads'
+    if not os.path.isabs(_UPLOAD_DIR):
+        root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        UPLOAD_DIR = os.path.join(root, _UPLOAD_DIR)
+    else:
+        UPLOAD_DIR = _UPLOAD_DIR
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
+    
+    # Rate limiting
+    RATELIMIT_STORAGE_URL = os.environ.get('RATELIMIT_STORAGE_URL', 'memory://')
+    
+    # CORS
+    CORS_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "http://localhost:5174"]
+    
+    # Segurança
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.environ.get('JWT_SECRET_KEY')
+    
+    # Headers de segurança (serão aplicados via middleware)
+    SECURITY_HEADERS = {
+        'Content-Security-Policy': (
+            "default-src 'self'; "
+            "script-src 'self'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: blob:; "
+            "object-src 'none'; "
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'"
+        ),
+        'X-Frame-Options': 'DENY',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'no-referrer',
+        'Permissions-Policy': 'geolocation=(), camera=(), microphone=()',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp'
+    }
+    
+    # Arquivos sensíveis bloqueados
+    SENSITIVE_FILES = [
+        '.env', '.git', 'config.py', 'requirements.txt',
+        'docker-compose.yml', 'Dockerfile', '.htaccess',
+        'web.config', 'settings.py', '__pycache__'
+    ]
+    
+    # Rotas honeypot
+    HONEYPOT_ROUTES = [
+        '/admin', '/dashboard', '/cms', '/painel',
+        '/wp-admin', '/wp-login.php', '/administrator',
+        '/login-admin', '/api/admin', '/api/v1/admin',
+        '/api/v2/admin', '/phpmyadmin', '/config',
+        '/config.php', '/.env', '/.git', '/backup',
+        '/db', '/database', '/setup', '/install',
+        '/shell', '/cmd', '/exec', '/eval',
+        '/api/users', '/api/debug', '/api/test',
+        '/swagger', '/api-docs', '/graphql'
+    ]
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or _sqlite_abs_uri('instaloop_dev.db')
+
+class ProductionConfig(Config):
+    DEBUG = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False
+
+config = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'testing': TestingConfig,
+    'default': DevelopmentConfig
+}

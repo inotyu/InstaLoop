@@ -1,0 +1,216 @@
+import React, { Suspense, useEffect, useState, useAuth } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+
+import Home from './routes/Home.jsx'
+import Login from './routes/Login.jsx'
+import Register from './routes/Register.jsx'
+import Feed from './routes/Feed.jsx'
+import Me from './routes/Me.jsx'
+import EditProfile from './routes/EditProfile.jsx'
+import Profile from './routes/Profile.jsx'
+import Post from './routes/Post.jsx'
+import Messages from './routes/Messages.jsx'
+import Search from './routes/Search.jsx'
+import Create from './routes/Create.jsx'
+import FollowRequests from './routes/FollowRequests.jsx'
+import ResetPassword from './routes/ResetPassword.jsx'
+import HoneypotPage from './routes/HoneypotPage.jsx'
+import SecurityWarning from './routes/SecurityWarning.jsx'
+import authService from './services/authService.js'
+
+const AdminPage = React.lazy(() => import('./routes/AdminPage.jsx'))
+
+const ADMIN_PATH = import.meta.env.VITE_ADMIN_ROUTE || '/admin'
+
+function RequireAuth({ children, loading }) {
+  if (loading) return null
+  if (!authService.isAuthenticated()) {
+    return <Navigate to="/login" replace />
+  }
+  return children
+}
+
+function PublicOnly({ children, loading }) {
+  if (loading) return null
+  if (authService.isAuthenticated()) {
+    return <Navigate to="/feed" replace />
+  }
+  return children
+}
+
+function AdminRoute({ loading }) {
+  if (loading) return null
+
+  const { user } = useAuth()
+  const isAuthenticated = authService.isAuthenticated()
+  const isAdmin = authService.isAdmin()
+
+  if (!isAuthenticated || !isAdmin) {
+    return <Navigate to="/" replace />
+  }
+
+  return (
+    <Suspense fallback={<div style={{ padding: 20 }}>Carregando painel admin...</div>}>
+      <AdminPage />
+    </Suspense>
+  )
+}
+
+export default function App() {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function initAuth() {
+      try {
+        await authService.ensureCsrfToken()
+        // Tenta recuperar sessão via refresh token se necessário
+        await authService.refreshToken()
+      } catch (error) {
+        // Erro ao inicializar auth (usuário não logado, normal)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    initAuth()
+  }, [])
+
+  const honeypotRoutes = [
+    '/admin',
+    '/dashboard',
+    '/cms',
+    '/painel',
+    '/wp-admin',
+    '/administrator',
+    '/login-admin',
+    '/config',
+    '/setup',
+    '/install'
+  ]
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        background: 'var(--bg)',
+        color: 'var(--text)'
+      }}>
+        <div>Carregando...</div>
+      </div>
+    )
+  }
+
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/feed" replace />} />
+          <Route
+            path="/login"
+            element={
+              <PublicOnly loading={loading}>
+                <Login />
+              </PublicOnly>
+            }
+          />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/register"
+            element={
+              <PublicOnly loading={loading}>
+                <Register />
+              </PublicOnly>
+            }
+          />
+          <Route path="/home" element={<Home />} />
+          <Route
+            path="/feed"
+            element={
+              <RequireAuth loading={loading}>
+                <Feed />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <RequireAuth loading={loading}>
+                <Search />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <RequireAuth loading={loading}>
+                <Create />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/me"
+            element={
+              <RequireAuth loading={loading}>
+                <Me />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <RequireAuth loading={loading}>
+                <EditProfile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <RequireAuth loading={loading}>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/post/:postId"
+            element={
+              <RequireAuth loading={loading}>
+                <Post />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <RequireAuth loading={loading}>
+                <Messages />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/follow-requests"
+            element={
+              <RequireAuth loading={loading}>
+                <FollowRequests />
+              </RequireAuth>
+            }
+          />
+          <Route path="/security-warning" element={<SecurityWarning />} />
+
+          {/* ROTA ADMIN DEVE VIR PRIMEIRO - MAIOR PRIORIDADE */}
+          <Route path={ADMIN_PATH + "/*"} element={<AdminRoute loading={loading} />} />
+
+          {/* HONEYPOTS - MENOR PRIORIDADE */}
+          {honeypotRoutes.map((p) => (
+            <Route key={p} path={p} element={<HoneypotPage />} />
+          ))}
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  )
+}

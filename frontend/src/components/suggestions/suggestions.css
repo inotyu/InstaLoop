@@ -1,0 +1,9 @@
+.sug{display:flex;flex-direction:column;gap:14px}
+.sug-title{font-weight:800;color:var(--text)}
+.sug-list{display:flex;flex-direction:column;gap:10px}
+.sug-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sug-left{display:flex;align-items:center;gap:10px;min-width:0}
+.sug-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sug-name{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sug-sub{font-size:12px;color:var(--muted)}
+.sug-footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.4}

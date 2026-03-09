@@ -1,0 +1,14 @@
+@import './theme.css';
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img,video{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+
+.container{max-width:var(--max);margin:0 auto;padding:0 16px}
+
+.hr{height:1px;background:var(--border);border:0;margin:16px 0}
+
+.visuallyHidden{position:absolute!important;left:-9999px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}

@@ -1,0 +1,113 @@
+.post{border:1px solid var(--border);background:var(--panel);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.post-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px}
+.post-user{display:flex;align-items:center;gap:10px}
+.post-userText{display:flex;flex-direction:column;gap:2px}
+.post-username{font-weight:800;font-size:14px}
+.post-meta{font-size:12px;color:var(--muted)}
+.post-more {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.post-more:hover {
+  background: var(--panel-2);
+}
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 8px;
+}
+.post-actionsLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.post-actionBtn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+.post-actionBtn:active {
+  transform: scale(1.1);
+}
+.post-actionBtn.liked {
+  color: var(--danger);
+}
+.post-likesCount {
+  padding: 0 14px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.post-caption {
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.post-captionUser {
+  font-weight: 700;
+  margin-right: 4px;
+}
+.post-viewComments {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 0 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.post-commentsList {
+  padding: 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.post-comment {
+  font-size: 14px;
+  line-height: 1.4;
+}
+.post-commentUser {
+  font-weight: 700;
+  margin-right: 4px;
+}
+.post-commentForm {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  gap: 12px;
+}
+.post-commentForm input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+.post-commentForm button {
+  background: none;
+  border: none;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.post-commentForm button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
