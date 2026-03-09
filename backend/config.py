@@ -17,16 +17,20 @@ class Config:
     print(f"🔍 CONFIG CLASS - VERCEL: {os.environ.get('VERCEL')}")
     print(f"🔍 CONFIG CLASS - DATABASE_URL from env: {os.environ.get('DATABASE_URL', 'NOT_SET')[:50]}...")
     
-    # Banco de dados - PostgreSQL em produção, SQLite em desenvolvimento
-    database_url = os.environ.get('DATABASE_URL')
-    if database_url:
-        # Produção: usar PostgreSQL
-        SQLALCHEMY_DATABASE_URI = database_url
-        print(f"✅ CONFIG CLASS - Using PostgreSQL: {SQLALCHEMY_DATABASE_URI[:50]}...")
+    # FORÇAR POSTGRESQL EM PRODUÇÃO - IGNORAR VARIÁVEIS DE AMBIENTE
+    if os.environ.get('VERCEL'):
+        # Produção Vercel: usar hardcoded Supabase
+        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
+        print(f"🚀 CONFIG CLASS - FORCED PostgreSQL (Vercel): {SQLALCHEMY_DATABASE_URI[:50]}...")
     else:
-        # Desenvolvimento: usar SQLite local
-        SQLALCHEMY_DATABASE_URI = _sqlite_abs_uri('instaloop.db')
-        print(f"❌ CONFIG CLASS - Using SQLite: {SQLALCHEMY_DATABASE_URI}")
+        # Desenvolvimento local: usar variáveis de ambiente ou SQLite
+        database_url = os.environ.get('DATABASE_URL')
+        if database_url:
+            SQLALCHEMY_DATABASE_URI = database_url
+            print(f"✅ CONFIG CLASS - Using PostgreSQL (Dev): {SQLALCHEMY_DATABASE_URI[:50]}...")
+        else:
+            SQLALCHEMY_DATABASE_URI = _sqlite_abs_uri('instaloop.db')
+            print(f"❌ CONFIG CLASS - Using SQLite (Dev): {SQLALCHEMY_DATABASE_URI}")
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
