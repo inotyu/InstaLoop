@@ -250,14 +250,26 @@ def get_client_ip(request) -> str:
 # Validação de Origin/Referer para CSRF
 def validate_origin(request) -> bool:
     """Valida Origin/Referer headers contra whitelist"""
+    from flask import has_request_context, current_app
+    
     origin = request.headers.get('Origin')
     referer = request.headers.get('Referer')
     
     # Em desenvolvimento, permitir localhost
-    if current_app.debug:
+    if has_request_context() and current_app.debug:
         allowed_origins = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']
     else:
-        allowed_origins = current_app.config.get('CORS_ORIGINS', [])
+        # Em produção, usar lista padrão se não tiver contexto
+        if has_request_context():
+            allowed_origins = current_app.config.get('CORS_ORIGINS', [])
+        else:
+            allowed_origins = [
+                'https://insta-loop.vercel.app',
+                'https://insta-loop-iufz.vercel.app',
+                'http://localhost:3000',
+                'http://localhost:5173',
+                'http://localhost:5174'
+            ]
     
     # Verificar Origin primeiro
     if origin:
