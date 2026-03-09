@@ -4,9 +4,6 @@ from flask import Flask, request, jsonify, g, send_from_directory
 
 from config import config
 from extensions import db, migrate, jwt, limiter, cors
-csrf = CSRFProtect()
-from flask_wtf.csrf import CSRFProtect
-csrf = CSRFProtect()
 from models import User
 from routes.auth import auth_bp
 from routes.users import users_bp
@@ -35,12 +32,6 @@ def create_app(config_name='development'):
     migrate.init_app(app, db)
     jwt.init_app(app)
     limiter.init_app(app)
-    # Configurar CSRF:
-    # - Flask-WTF CSRF é mantido apenas para formulários tradicionais
-    # - Endpoints de API usam exclusivamente o esquema customizado (double submit + Origin/Referer)
-    app.config['WTF_CSRF_ENABLED'] = True
-    app.config['WTF_CSRF_CHECK_DEFAULT'] = True
-    csrf.init_app(app)
     cors.init_app(
         app,
         resources={
@@ -76,19 +67,6 @@ def create_app(config_name='development'):
     
     # Registrar rotas admin com caminho secreto
     register_admin_routes(app)
-
-    # Isentar blueprints de API do CSRF do Flask-WTF (usamos middleware próprio)
-    csrf.exempt(auth_bp)
-    csrf.exempt(users_bp)
-    csrf.exempt(posts_bp)
-    csrf.exempt(messages_bp)
-    csrf.exempt(reports_bp)
-    csrf.exempt(csrf_bp)
-    csrf.exempt(telemetry_bp)
-    
-    # Isentar admin_bp do CSRF (importado dentro da função)
-    from routes.admin import admin_bp
-    csrf.exempt(admin_bp)  # Isentar admin do CSRF
     
     # Debug: mostrar rotas registradas
     print("\n=== ROTAS REGISTRADAS ===")
