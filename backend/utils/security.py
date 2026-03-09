@@ -8,7 +8,7 @@ import argon2
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from argon2 import low_level
-from flask import current_app
+from flask import current_app, request
 
 # Inicializa Argon2id com parâmetros configuráveis
 def get_argon2_hasher():
