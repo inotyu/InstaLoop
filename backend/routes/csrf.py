@@ -19,7 +19,7 @@ def issue_csrf():
         token,
         httponly=True,
         secure=not current_app.debug,
-        samesite='Strict',
+        samesite='Lax' if current_app.debug else 'Strict',
         max_age=60 * 60,  # 1h
         path='/'
     )

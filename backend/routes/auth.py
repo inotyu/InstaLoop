@@ -276,7 +276,7 @@ def login():
             refresh_token,
             httponly=True,
             secure=not current_app.debug,
-            samesite='Strict',
+            samesite='Lax' if current_app.debug else 'Strict',
             max_age=int(current_app.config['JWT_REFRESH_TOKEN_EXPIRES'].total_seconds())
         )
 
@@ -366,7 +366,7 @@ def refresh():
             new_refresh_token,
             httponly=True,
             secure=not current_app.debug,
-            samesite='Strict',
+            samesite='Lax' if current_app.debug else 'Strict',
             max_age=int(current_app.config['JWT_REFRESH_TOKEN_EXPIRES'].total_seconds())
         )
         
