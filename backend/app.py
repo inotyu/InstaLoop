@@ -27,19 +27,21 @@ def create_app(config_name='development'):
     config_name = config_name or os.environ.get('FLASK_ENV', 'development')
     app.config.from_object(config[config_name])
 
-    # Em ambiente de produção (Vercel), exigir DATABASE_URL (Supabase)
-    if os.environ.get('VERCEL') and not os.environ.get('DATABASE_URL'):
-        raise ValueError("DATABASE_URL é obrigatório em produção. Configure Supabase.")
+    # Em ambiente de produção (Vercel), configurar paths antes de tudo
+    if os.environ.get('VERCEL'):
+        app.config['INSTANCE_PATH'] = '/tmp'  # Usar /tmp como instance path
+        
+        # Exigir DATABASE_URL (Supabase)
+        if not os.environ.get('DATABASE_URL'):
+            raise ValueError("DATABASE_URL é obrigatório em produção. Configure Supabase.")
 
     # Inicializar extensões
     # Desabilitar criação automática de diretório instance em ambiente serverless
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    if os.environ.get('VERCEL'):
-        app.config['INSTANCE_PATH'] = '/tmp'  # Usar /tmp como instance path
     
     db.init_app(app)
     
-    # Criar tabelas automaticamente (apenas em desenvolvimento ou se não existirem)
+    # Criar tabelas automaticamente (apenas em desenvolvimento)
     if not os.environ.get('VERCEL'):
         with app.app_context():
             db.create_all()
