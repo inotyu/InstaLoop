@@ -16,8 +16,7 @@ def issue_csrf():
 
     response = make_response(jsonify({"csrf_token": token}))
     # Detectar ambiente para configurar SameSite corretamente
-    is_vercel = os.environ.get('VERCEL') or 'vercel' in current_app.config.get('SERVER_NAME', '')
-    is_production = not current_app.debug and not is_vercel
+    is_vercel = os.environ.get('VERCEL') is not None
     
     response.set_cookie(
         'csrf_token',

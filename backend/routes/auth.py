@@ -273,7 +273,7 @@ def login():
         })
 
         # Detectar ambiente para configurar SameSite corretamente
-        is_vercel = os.environ.get('VERCEL') or 'vercel' in current_app.config.get('SERVER_NAME', '')
+        is_vercel = os.environ.get('VERCEL') is not None
         
         response.set_cookie(
             'refresh_token',
@@ -366,7 +366,7 @@ def refresh():
         response = jsonify({"access_token": new_access_token})
         
         # Detectar ambiente para configurar SameSite corretamente
-        is_vercel = os.environ.get('VERCEL') or 'vercel' in current_app.config.get('SERVER_NAME', '')
+        is_vercel = os.environ.get('VERCEL') is not None
         
         response.set_cookie(
             'refresh_token',
