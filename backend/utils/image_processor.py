@@ -363,7 +363,12 @@ def process_upload(file_storage, upload_dir: str = None) -> Tuple[str, dict]:
     
     # Salvar em disco
     if upload_dir is None:
-        upload_dir = current_app.config.get('UPLOAD_DIR', 'static/uploads')
+        # Usar /tmp/uploads na Vercel, senão usar config padrão
+        if os.environ.get('VERCEL'):
+            upload_dir = '/tmp/uploads'
+        else:
+            from flask import current_app
+            upload_dir = current_app.config.get('UPLOAD_DIR', 'static/uploads')
     
     file_path = ImageProcessor.save_image_to_disk(processed_bytes, safe_filename, upload_dir)
     

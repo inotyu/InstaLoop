@@ -98,6 +98,20 @@ def create_app(config_name='development'):
         response.headers['Content-Type'] = 'application/octet-stream'
         return response
 
+    # Rota para uploads na Vercel
+    @app.route('/uploads/<path:filename>')
+    def serve_vercel_uploads(filename):
+        if os.environ.get('VERCEL'):
+            upload_dir = '/tmp/uploads'
+        else:
+            upload_dir = app.config.get('UPLOAD_DIR', 'static/uploads')
+        
+        response = send_from_directory(upload_dir, filename)
+        response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'
+        response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response.headers['Content-Type'] = 'application/octet-stream'
+        return response
+
     # Middleware de segurança - ordem é crítica!
     setup_security_middleware(app)
     

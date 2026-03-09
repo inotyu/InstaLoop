@@ -188,7 +188,11 @@ def create_post_with_media():
             
             # Processar upload
             filename, metadata = process_upload(file)
-            media_url = f"/static/uploads/{filename}"
+            # Usar URL relativa correta para Vercel
+            if os.environ.get('VERCEL'):
+                media_url = f"/uploads/{filename}"
+            else:
+                media_url = f"/static/uploads/{filename}"
             
             # Obter conteúdo do texto
             content = request.form.get('content', '').strip()
