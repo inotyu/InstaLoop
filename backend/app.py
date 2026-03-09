@@ -30,13 +30,12 @@ def create_app(config_name='development'):
     # Inicializar extensões
     # Desabilitar criação automática de diretório instance em ambiente serverless
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    if not app.config.get('SQLALCHEMY_DATABASE_URI', '').startswith('sqlite'):
-        db.init_app(app)
-    else:
-        # Para SQLite em ambiente serverless, usar memória ou caminho temporário
-        if os.environ.get('VERCEL'):
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-        db.init_app(app)
+    db.init_app(app)
+    
+    # Criar tabelas automaticamente na Vercel
+    with app.app_context():
+        db.create_all()
+    
     migrate.init_app(app, db)
     jwt.init_app(app)
     limiter.init_app(app)
@@ -134,28 +133,16 @@ def setup_security_middleware(app):
         
         # CSRF (Double Submit Cookie) + Origin/Referer (camada adicional)
         if request.method not in ['GET', 'HEAD', 'OPTIONS'] and request.path.startswith('/api/'):
-            try:
-                print(f"🔍 DEBUG: Validando origin para {request.path}")
-                print(f"🔍 DEBUG: Origin: {request.headers.get('Origin')}")
-                print(f"🔍 DEBUG: Referer: {request.headers.get('Referer')}")
-                print(f"🔍 DEBUG: CORS_ORIGINS: ['https://insta-loop.vercel.app', 'https://insta-loop-iufz.vercel.app', 'http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']")
-                
-                if not validate_origin(request):
-                    print(f"❌ DEBUG: Origin validation FAILED")
-                    log_security_event(
-                        'csrf_invalid',
-                        details={
-                            'reason': 'origin_check_failed',
-                            'origin': request.headers.get('Origin'),
-                            'referer': request.headers.get('Referer'),
-                        }
-                    )
-                    return jsonify({"error": "Not found"}), 404
-                else:
-                    print(f"✅ DEBUG: Origin validation PASSED")
-            except Exception as e:
-                print(f"❌ DEBUG: Error in origin validation: {str(e)}")
-                return jsonify({"error": "Internal server error"}), 500
+            if not validate_origin(request):
+                log_security_event(
+                    'csrf_invalid',
+                    details={
+                        'reason': 'origin_check_failed',
+                        'origin': request.headers.get('Origin'),
+                        'referer': request.headers.get('Referer'),
+                    }
+                )
+                return jsonify({"error": "Not found"}), 404
 
             # Permitir emitir CSRF token sem exigir token
             if request.path != '/api/csrf' and not request.path.startswith('/api/auth/'):
