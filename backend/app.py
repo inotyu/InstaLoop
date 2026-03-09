@@ -134,7 +134,13 @@ def setup_security_middleware(app):
         
         # CSRF (Double Submit Cookie) + Origin/Referer (camada adicional)
         if request.method not in ['GET', 'HEAD', 'OPTIONS'] and request.path.startswith('/api/'):
+            print(f"🔍 DEBUG: Validando origin para {request.path}")
+            print(f"🔍 DEBUG: Origin: {request.headers.get('Origin')}")
+            print(f"🔍 DEBUG: Referer: {request.headers.get('Referer')}")
+            print(f"🔍 DEBUG: CORS_ORIGINS: {current_app.config.get('CORS_ORIGINS', [])}")
+            
             if not validate_origin(request):
+                print(f"❌ DEBUG: Origin validation FAILED")
                 log_security_event(
                     'csrf_invalid',
                     details={
@@ -144,6 +150,8 @@ def setup_security_middleware(app):
                     }
                 )
                 return jsonify({"error": "Not found"}), 404
+            else:
+                print(f"✅ DEBUG: Origin validation PASSED")
 
             # Permitir emitir CSRF token sem exigir token
             if request.path != '/api/csrf' and not request.path.startswith('/api/auth/'):

@@ -26,6 +26,7 @@ def issue_csrf():
         secure=True,  # Sempre secure em produção/vercel
         samesite='None' if is_vercel else ('Lax' if current_app.debug else 'Strict'),
         max_age=60 * 60,  # 1h
-        path='/'
+        path='/',
+        partitioned=is_vercel  # Partitioned para cross-site na Vercel
     )
     return response
