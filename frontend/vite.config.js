@@ -11,56 +11,28 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        // Remover todos os console.* (apenas em produção)
-        // drop_console: true,
-        // drop_debugger: true,
+        // Otimizações menos agressivas para não quebrar React
+        drop_debugger: true,
+        passes: 2,
         
-        // Múltiplas passagens de otimização
-        passes: 3,
-        
-        // Remover funções específicas (apenas em produção)
-        // pure_funcs: [
-        //   'console.log', 'console.warn', 'console.error',
-        //   'console.info', 'console.debug', 'console.trace',
-        //   'console.table', 'console.group', 'console.groupEnd'
-        // ],
-        
-        // Otimizações adicionais
-        dead_code: true,
-        unused: true,
-        hoist_funs: true,
-        hoist_vars: true,
-        if_return: true,
-        join_vars: true,
-        collapse_vars: true,
-        reduce_vars: true,
-        sequences: true,
-        
-        // Proteção contra engenharia reversa
-        evaluate: true,
-        booleans: true,
-        loops: true,
-        properties: true,
-        keep_fnames: false
+        // Remover otimizações problemáticas
+        // dead_code: true,
+        // unused: true,
+        // hoist_funs: true,
+        // hoist_vars: true,
+        // if_return: true,
+        // join_vars: true,
+        // collapse_vars: true,
+        // reduce_vars: true,
+        // sequences: true,
       },
       mangle: {
-        // Ofuscação de nomes de variáveis
-        toplevel: true,
+        // Ofuscação menos agressiva
+        toplevel: false,
         eval: true,
         
-        // Reserved names to prevent breaking React internals
-        reserved: [
-          'ReactCurrentOwner',
-          '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED__',
-          'ReactCurrentDispatcher',
-          'ReactCurrentBatchConfig'
-        ],
-        
-        // Ofuscar propriedades com underscore
-        properties: {
-          regex: /^_/,
-          reserved: []
-        },
+        // Desabilitar mangling de propriedades para não quebrar React
+        properties: false,
         
         // Configurações de ofuscação
         keep_fnames: false
@@ -79,17 +51,12 @@ export default defineConfig({
         entryFileNames: 'assets/[hash].js',
         assetFileNames: 'assets/[hash].[ext]',
         
-        // Divisão de código manual
-        manualChunks: {
-          // Vendor em chunk separado
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          
-          // Bibliotecas de UI em chunk separado
-          ui: ['lucide-react'],
-          
-          // Utilitários em chunk separado
-          utils: []
-        },
+        // Divisão de código automática (removido manualChunks para evitar duplicação)
+        // manualChunks: {
+        //   vendor: ['react', 'react-dom', 'react-router-dom'],
+        //   ui: ['lucide-react'],
+        //   utils: []
+        // },
         
         // Otimizações adicionais
         compact: true
@@ -201,8 +168,8 @@ export default defineConfig({
   
   // Configurações de ESBuild
   esbuild: {
-    // Minificação em desenvolvimento também
-    minify: true,
+    // Minificação removida para evitar dupla minificação
+    // minify: true,
     
     // Remover console apenas em produção
     // drop: ['console', 'debugger'],
