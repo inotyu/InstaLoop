@@ -41,7 +41,6 @@ export default defineConfig({
         booleans: true,
         loops: true,
         properties: true,
-        keep_fargs: false,
         keep_fnames: false,
         unsafe: true,
         unsafe_comps: true,
@@ -62,8 +61,7 @@ export default defineConfig({
         },
         
         // Configurações de ofuscação
-        keep_fnames: false,
-        keep_fargs: false
+        keep_fnames: false
       },
       format: {
         // Zero comentários no bundle
@@ -92,8 +90,7 @@ export default defineConfig({
         },
         
         // Otimizações adicionais
-        compact: true,
-        dynamicImportVars: true
+        compact: true
       },
       
       // Plugins adicionais de segurança
