@@ -48,6 +48,14 @@ export default defineConfig({
         toplevel: true,
         eval: true,
         
+        // Reserved names to prevent breaking React internals
+        reserved: [
+          'ReactCurrentOwner',
+          '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED__',
+          'ReactCurrentDispatcher',
+          'ReactCurrentBatchConfig'
+        ],
+        
         // Ofuscar propriedades com underscore
         properties: {
           regex: /^_/,
