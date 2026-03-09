@@ -29,6 +29,11 @@
   "env": {
     "FLASK_ENV": "production",
     "VERCEL": "1",
-    "DATABASE_URL": "postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres"
+    "DATABASE_URL": "postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres",
+    "JWT_SECRET_KEY": "967e561a954b541927ff56b1ca03237f9ca1abede1bf0d1d80b3d952054d181",
+    "ADMIN_ROUTE_SECRET": "Nj4SzW3JoQQ",
+    "SECRET_KEY": "24ffbcb16d218148b229935b9019606ee345d8070bec2a6fa552046981520edf",
+    "JWT_ACCESS_TOKEN_EXPIRES": "900",
+    "JWT_REFRESH_TOKEN_EXPIRES": "604800"
   }
 }
