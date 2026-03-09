@@ -185,7 +185,10 @@ export default defineConfig({
     },
     
     // Extensions para imports limpos
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    
+    // Dedupe para evitar duplicação de React
+    dedupe: ['react', 'react-dom']
   },
   
   // Configurações de ESBuild
