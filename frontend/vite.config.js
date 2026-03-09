@@ -41,13 +41,7 @@ export default defineConfig({
         booleans: true,
         loops: true,
         properties: true,
-        keep_fnames: false,
-        unsafe: true,
-        unsafe_comps: true,
-        unsafe_Function: true,
-        unsafe_math: true,
-        unsafe_proto: true,
-        unsafe_regexp: true
+        keep_fnames: false
       },
       mangle: {
         // Ofuscação de nomes de variáveis
