@@ -246,31 +246,21 @@ Isso criará:
 4. Digite o código 2FA do seu app autenticador
 5. **Painel Admin:** http://localhost:5173/Nj4SzW3JoQQ/dashboard
 
-## 🛡️ Recursos de Segurança
+## � Segurança - Yuri, pode tentar hackear! 🕵️‍♂️
 
-### Autenticação
-- ✅ **JWT Tokens** com refresh tokens
-- ✅ **Autenticação em Duas Etapas (2FA)** com TOTP
-- ✅ **Proteção CSRF** com Double Submit Cookie
-- ✅ **Rate Limiting** (5 tentativas/minuto para admin)
-- ✅ **Lockout Progressivo** após tentativas falhidas
+Este projeto foi desenvolvido com foco em segurança cibernética. Yuri pode tentar:
 
-### Autorização
-- ✅ **Controle de Acesso Baseado em Roles** (admin/user)
-- ✅ **Validação de Ownership** para posts/comentários
-- ✅ **Fingerprinting** de dispositivos
+### Honeypots Disponíveis:
+- `/admin`, `/dashboard`, `/cms`, `/painel`, `/wp-admin`
 
-### Segurança de Dados
-- ✅ **Hashing Argon2** para senhas
-- ✅ **Sanitização XSS** em conteúdo de posts
-- ✅ **Validação de URLs** para mídia
-- ✅ **Logs de Auditoria** completos
+### Logs para Monitorar:
+```bash
+# Ver logs de segurança
+tail -f backend/logs/security.log
 
-### Proteções Avançadas
-- ✅ **Detecção de Comportamento Automatizado**
-- ✅ **Honeypots** para bots
-- ✅ **Rate Limiting Global**
-- ✅ **Headers de Segurança** (CSP, HSTS, etc.)
+# Ver logs de auditoria
+tail -f backend/logs/audit.log
+```
 
 ## 🔧 Troubleshooting
 
