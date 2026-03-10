@@ -323,37 +323,11 @@ InstaLoop/
 - ✅ **Busca** de usuários
 - ✅ **Perfil** personalizável
 
-### Para Administradores
-- ✅ **Painel Dashboard** com estatísticas
-- ✅ **Gerenciamento de Usuários**
-- ✅ **Revisão de Denúncias**
-- ✅ **Logs de Segurança**
-- ✅ **Configurações do Sistema**
+
 
 ## 🚨 Segurança - Yuri, pode tentar hackear! 🕵️‍♂️
 
 Este projeto foi desenvolvido com foco em segurança cibernética. Yuri pode tentar:
-
-### Ataques para Testar:
-- **SQL Injection** - Protegido por SQLAlchemy ORM
-- **XSS** - Protegido por sanitização de entrada
-- **CSRF** - Protegido por Double Submit Cookie
-- **Brute Force** - Protegido por rate limiting e lockout
-- **Session Hijacking** - Protegido por fingerprinting
-- **Directory Traversal** - Protegido por validações
-- **API Abuse** - Protegido por rate limiting global
-
-### Honeypots Disponíveis:
-- `/admin`, `/dashboard`, `/cms`, `/painel`, `/wp-admin`
-
-### Logs para Monitorar:
-```bash
-# Ver logs de segurança
-tail -f backend/logs/security.log
-
-# Ver logs de auditoria
-tail -f backend/logs/audit.log
-```
 
 ## 🤝 Contribuindo
 
