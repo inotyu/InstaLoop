@@ -16,7 +16,7 @@ export default function Dashboard() {
         
         const response = await authService.secureRequest(
           'get',
-          '/admin123/dashboard'
+          `/${import.meta.env.VITE_ADMIN_ROUTE}/dashboard`
         )
         setData(response)
       } catch (error) {
@@ -263,17 +263,17 @@ export default function Dashboard() {
         </h3>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button variant="primary" onClick={() => {
-            navigate('/admin123/users')
+            navigate(`/${import.meta.env.VITE_ADMIN_ROUTE}/users`)
           }}>
             Gerenciar Usuários
           </Button>
           <Button variant="ghost" onClick={() => {
-            navigate('/admin123/reports')
+            navigate(`/${import.meta.env.VITE_ADMIN_ROUTE}/reports`)
           }}>
             Revisar Denúncias
           </Button>
           <Button variant="ghost" onClick={() => {
-            navigate('/admin123/security')
+            navigate(`/${import.meta.env.VITE_ADMIN_ROUTE}/security`)
           }}>
             Ver Logs de Segurança
           </Button>

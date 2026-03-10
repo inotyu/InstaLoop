@@ -46,8 +46,12 @@ function AdminRoute({ loading }) {
   const { user } = useAuth()
   const isAuthenticated = authService.isAuthenticated()
   const isAdmin = authService.isAdmin()
+  
+  console.log('AdminRoute Debug:', { user, isAuthenticated, isAdmin })
+  console.log('AuthService user:', authService.getUser())
 
   if (!isAuthenticated || !isAdmin) {
+    console.log('Redirecting to feed - not admin or not authenticated')
     return <Navigate to="/" replace />
   }
 

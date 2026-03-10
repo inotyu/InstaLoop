@@ -81,10 +81,16 @@ class PostService {
   async updatePost(postId, content, mediaUrl) {
     try {
       await authService.ensureCsrfToken()
-      const response = await authService.api.put(`/api/posts/${postId}`, {
-        content,
-        media_url: mediaUrl
-      })
+      
+      // Enviar apenas os campos que foram fornecidos
+      const payload = { content }
+      
+      // Adicionar media_url apenas se não for null
+      if (mediaUrl !== null && mediaUrl !== undefined) {
+        payload.media_url = mediaUrl
+      }
+      
+      const response = await authService.api.put(`/api/posts/${postId}`, payload)
       return response.data
     } catch (error) {
       throw authService.handleError(error)

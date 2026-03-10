@@ -77,7 +77,7 @@ class AuthService {
         if (error.response?.status === 401 && 
             !originalRequest._retry && 
             !originalRequest.url?.includes('/auth/refresh') &&
-            !originalRequest.url?.includes('/admin123/verify-2fa') &&
+            !originalRequest.url?.includes(`/${import.meta.env.VITE_ADMIN_ROUTE}/verify-2fa`) &&
             !originalRequest._retryCount) {
           
           // Limitar a 3 tentativas de refresh
@@ -142,9 +142,14 @@ class AuthService {
       
       const { access_token, user } = response.data
       
+      console.log('Login response:', { access_token, user })
+      console.log('User is_admin:', user?.is_admin)
+      
       // Armazenar em memória
       this.setToken(access_token)
       this.setUser(user)
+      
+      console.log('AuthService after login:', { user: this.getUser(), isAdmin: this.isAdmin() })
       
       return response.data
     } catch (error) {

@@ -50,7 +50,7 @@ export default function Admin2FAVerify({ onVerified }) {
       }
       
       
-      const response = await authService.api.post('/admin123/verify-2fa', {
+      const response = await authService.api.post(`/${import.meta.env.VITE_ADMIN_ROUTE}/verify-2fa`, {
         totp_code: totpCode
       })
       

@@ -15,6 +15,7 @@ export default function PostCard({ post, onUpdate }) {
   const [reportDescription, setReportDescription] = useState('')
   const [showOptionsMenu, setShowOptionsMenu] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState('')
   const [editMediaUrl, setEditMediaUrl] = useState('')
   const menuRef = useRef(null)
@@ -131,7 +132,18 @@ export default function PostCard({ post, onUpdate }) {
   async function handleUpdate() {
     try {
       setLoading(true)
-      const response = await postService.updatePost(post.id, editContent.trim(), editMediaUrl)
+      
+      // Enviar apenas se houver conteúdo ou mídia válida
+      const content = editContent.trim()
+      const mediaUrl = editMediaUrl.trim()
+      
+      // Se não houver mídia ou for inválida, enviar null para não falhar validação
+      let finalMediaUrl = null
+      if (mediaUrl && (mediaUrl.startsWith('http://') || mediaUrl.startsWith('https://'))) {
+        finalMediaUrl = mediaUrl
+      }
+      
+      const response = await postService.updatePost(post.id, content, finalMediaUrl)
       
       // Update the post with new data
       if (onUpdate) {

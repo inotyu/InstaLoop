@@ -82,7 +82,7 @@ export default function Me() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => navigate('/admin123')}
+                    onClick={() => navigate(`/${import.meta.env.VITE_ADMIN_ROUTE}`)}
                     style={{
                       background: 'var(--accent)',
                       color: 'var(--accent-foreground)',

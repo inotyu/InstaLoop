@@ -54,6 +54,11 @@ def register():
     """
     Registro de novo usuário com validações de segurança.
     """
+    print(f"🔍 DEBUG: Request method: {request.method}")
+    print(f"🔍 DEBUG: Content-Type: {request.content_type}")
+    print(f"🔍 DEBUG: Raw body: {request.get_data()}")
+    print(f"🔍 DEBUG: JSON data: {request.get_json()}")
+    
     try:
         # Validar e filtrar campos
         data, errors = validate_endpoint_fields('auth_register', request.get_json())
@@ -193,17 +198,23 @@ def login():
             return jsonify({"error": "Credenciais inválidas"}), 400
 
         # Verificar lockout por tentativas
+        print(f"Checking lockout for user: {user.id if user else 'None'}")
         if user and user.locked_until and user.locked_until > datetime.utcnow():
+            print(f"User is locked until: {user.locked_until}")
             log_auth_event('login_locked', user_id=str(user.id))
             return jsonify({"error": "Credenciais inválidas"}), 400
 
+        print("Checking password...")
         # Verificar senha (timing-safe)
         password_valid = False
         if user:
             password_valid = verify_password(password, user.password_hash)
             print(f'Password check: {password_valid}')
+            print(f'Input password length: {len(password)}')
+            print(f'Hash starts with: {user.password_hash[:50]}')
 
         if not user or not password_valid:
+            print(f'Login failed: user_exists={bool(user)}, password_valid={password_valid}')
             # Incrementar tentativas falhas
             if user:
                 user.failed_login_attempts += 1
@@ -271,6 +282,8 @@ def login():
                 "bio": user.bio
             }
         })
+        
+        print(f"✅ Login successful! User data: {{'id': str(user.id), 'username': user.username, 'is_admin': user.is_admin}}")
 
         # Detectar ambiente para configurar SameSite corretamente
         is_vercel = os.environ.get('VERCEL') is not None
