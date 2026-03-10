@@ -202,37 +202,6 @@ npm run dev
 
 **Servidor frontend:** http://localhost:5173
 
-### 5. Configurar Administrador
-
-Após iniciar o backend pela primeira vez, execute:
-
-**Linux/macOS:**
-```bash
-cd backend
-source .venv311/bin/activate
-python setup_admin_2fa_simple.py
-```
-
-**Windows (Command Prompt):**
-```cmd
-cd backend
-.venv311\Scripts\activate
-python setup_admin_2fa_simple.py
-```
-
-**Windows (PowerShell):**
-```powershell
-cd backend
-.\.venv311\Scripts\Activate.ps1
-python setup_admin_2fa_simple.py
-```
-
-Isso criará:
-- **Usuário:** admin
-- **Email:** admin@instaloop.com
-- **Senha:** Admin@123
-- **2FA:** Secret para configurar no app autenticador
-
 ## 🔐 Acesso ao Sistema
 
 ### Login de Usuário Normal
