@@ -51,12 +51,10 @@ export default defineConfig({
         entryFileNames: 'assets/[hash].js',
         assetFileNames: 'assets/[hash].[ext]',
         
-        // Divisão de código automática (removido manualChunks para evitar duplicação)
-        // manualChunks: {
-        //   vendor: ['react', 'react-dom', 'react-router-dom'],
-        //   ui: ['lucide-react'],
-        //   utils: []
-        // },
+        // Manter authService em um único chunk para evitar Jh.register is not a function (Terser/code-split)
+        manualChunks: (id) => {
+          if (id.includes('authService')) return 'auth'
+        },
         
         // Otimizações adicionais
         compact: true

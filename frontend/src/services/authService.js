@@ -284,9 +284,20 @@ class AuthService {
 // Instância singleton
 const authService = new AuthService()
 
-// Export nomeado para garantir que register esteja no bundle (evita tree-shake em alguns builds)
+// Registro: implementação inline para não depender de authService.register no bundle (evita Jh.register is not a function com code-split/Terser)
 export async function register(data) {
-  return authService.register(data)
+  try {
+    await authService.ensureCsrfToken()
+    const response = await authService.api.post('/api/auth/register', {
+      username: data.username,
+      email: data.email,
+      password: data.password
+    })
+    return response.data
+  } catch (error) {
+    const handled = authService.handleError(error)
+    throw Object.assign(new Error(handled.message), { details: handled.details || [] })
+  }
 }
 
 export default authService
