@@ -4,7 +4,7 @@ Uma rede social completa e segura com autenticação avançada, painel administr
 
 ## 🚀 Visão Geral
 
-InstaLoop é uma plataforma de rede social moderna construída com **Flask** (backend) e **React + Vite** (frontend), utilizando **PostgreSQL** como banco de dados. O projeto inclui recursos avançados de segurança como autenticação em duas etapas (2FA), proteção CSRF, rate limiting, detecção de comportamento automatizado e um painel administrativo secreto.
+InstaLoop é uma plataforma de rede social moderna construída com **Flask** (backend) e **React + Vite** (frontend), utilizando **PostgreSQL** como banco de dados. O projeto inclui recursos avançados de segurança.
 
 ## 🛠️ Pré-requisitos
 
