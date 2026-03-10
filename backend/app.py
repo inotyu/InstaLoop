@@ -66,6 +66,15 @@ def create_app(config_name='development'):
         ],
     )
     
+    # Rota health check para Vercel
+    @app.route('/')
+    def health_check():
+        return jsonify({
+            "status": "ok", 
+            "message": "InstaLoop API is running",
+            "version": "2.0.0"
+        })
+
     # Middleware para log de todas as requisições
     @app.before_request
     def log_all_requests():
