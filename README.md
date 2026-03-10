@@ -208,18 +208,9 @@ npm run dev
 - **URL:** http://localhost:5173/login
 - Registre-se ou faça login com qualquer conta
 
-## 🚨 Desafio de Segurança - Yuri, pode tentar hackear! 🕵️‍♂️
+## 🚨 Yuri, tenta hackear! 🕵️‍♂️
 
 Este projeto foi desenvolvido com foco em segurança cibernética. Yuri pode tentar descobrir vulnerabilidades e explorar o sistema!
-
-### Logs para Monitorar:
-```bash
-# Ver logs de segurança
-tail -f backend/logs/security.log
-
-# Ver logs de auditoria
-tail -f backend/logs/audit.log
-```
 
 ## 🔧 Troubleshooting
 
