@@ -72,16 +72,16 @@ def create_app(config_name='development'):
         print(f"🌐 [{datetime.utcnow()}] {request.method} {request.path} - Headers: {dict(request.headers)}")
     
     # Registrar blueprints
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(users_bp)
-    app.register_blueprint(posts_bp)
-    app.register_blueprint(messages_bp)
+    app.register_blueprint(auth_bp, url_prefix='/api')
+    app.register_blueprint(users_bp, url_prefix='/api')
+    app.register_blueprint(posts_bp, url_prefix='/api')
+    app.register_blueprint(messages_bp, url_prefix='/api')
     # Registrar blueprints
     from routes.reports import reports_bp
-    app.register_blueprint(reports_bp)
-    app.register_blueprint(csrf_bp)
-    app.register_blueprint(telemetry_bp)
-    app.register_blueprint(debug_bp)
+    app.register_blueprint(reports_bp, url_prefix='/api')
+    app.register_blueprint(csrf_bp, url_prefix='/api')
+    app.register_blueprint(telemetry_bp, url_prefix='/api')
+    app.register_blueprint(debug_bp, url_prefix='/api')
     
     # Registrar rotas admin com caminho secreto
     register_admin_routes(app)
