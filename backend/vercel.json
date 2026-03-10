@@ -13,10 +13,11 @@
     }
   ],
   "env": {
+    "VERCEL": "1",
     "FLASK_ENV": "production",
-    "JWT_SECRET_KEY": "dummy-jwt-secret-for-vercel-deployment",
-    "ADMIN_ROUTE_SECRET": "dummy-admin-route-secret",
-    "SECRET_KEY": "dummy-secret-key-for-vercel",
-    "DATABASE_URL": "sqlite:///tmp/instaloop.db"
+    "DATABASE_URL": "postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres",
+    "JWT_SECRET_KEY": "967e561a954b541927ff56b1ca03237f9ca1abede1bf0d1d80b3d952054d181",
+    "ADMIN_ROUTE_SECRET": "Nj4SzW3JoQQ",
+    "SECRET_KEY": "24ffbcb16d218148b229935b9019606ee345d8070bec2a6fa552046981520edf"
   }
 }

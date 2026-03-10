@@ -115,8 +115,12 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    # Force Supabase URL for production to avoid SQLite fallback
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
+    # Em produção NUNCA usar SQLite (Vercel/serverless não suporta). Usar apenas PostgreSQL.
+    _db_url = os.environ.get('DATABASE_URL') or ''
+    if _db_url.startswith('postgresql://') or _db_url.startswith('postgres://'):
+        SQLALCHEMY_DATABASE_URI = _db_url
+    else:
+        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres.ynotajlmnxdrvelzxdyq:Darson2017%40%40@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
     
     # Force production values if not set in environment
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or '967e561a954b541927ff56b1ca03237f9ca1abede1bf0d1d80b3d952054d181'
