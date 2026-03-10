@@ -239,19 +239,9 @@ Isso criará:
 - **URL:** http://localhost:5173/login
 - Registre-se ou faça login com qualquer conta
 
-### Acesso ao Painel Administrativo
-1. Faça login como admin
-2. Vá para seu perfil (ícone do usuário)
-3. Clique em **"Painel Admin"**
-4. Digite o código 2FA do seu app autenticador
-5. **Painel Admin:** http://localhost:5173/Nj4SzW3JoQQ/dashboard
+## 🚨 Desafio de Segurança - Yuri, pode tentar hackear! 🕵️‍♂️
 
-## � Segurança - Yuri, pode tentar hackear! 🕵️‍♂️
-
-Este projeto foi desenvolvido com foco em segurança cibernética. Yuri pode tentar:
-
-### Honeypots Disponíveis:
-- `/admin`, `/dashboard`, `/cms`, `/painel`, `/wp-admin`
+Este projeto foi desenvolvido com foco em segurança cibernética. Yuri pode tentar descobrir vulnerabilidades e explorar o sistema!
 
 ### Logs para Monitorar:
 ```bash
